@@ -1,0 +1,322 @@
+{% extends 'compass_app/base.html' %}
+{% load custom_filters %}
+
+{% block title %}Mock Interview - Career Compass{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-4">
+                        <h1 class="h2 mb-3">AI-Powered Mock Interview</h1>
+                        <p class="lead text-muted mb-0">Practice your interview skills with personalized questions based on your resume</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-comment-dots me-2 text-primary"></i>
+                            Interview Simulator
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if not resume_processed %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-upload fa-4x text-light mb-3"></i>
+                                <h5>No Resume Uploaded Yet</h5>
+                                <p class="text-muted">Upload your resume to get personalized interview questions</p>
+                                <a href="{% url 'resume_upload' %}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-upload me-2"></i>Upload Resume
+                                </a>
+                            </div>
+                        {% elif not interview_started %}
+                            <!-- Interview Introduction -->
+                            <div class="text-center py-4">
+                                <i class="fas fa-user-tie fa-4x text-primary mb-4"></i>
+                                <h4 class="mb-3">Ready for your interview?</h4>
+                                <p class="mb-4">
+                                    This AI-powered mock interview will help you prepare for real interviews by:
+                                </p>
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-md-8">
+                                        <ul class="list-group list-group-flush text-start">
+                                            <li class="list-group-item">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                Asking relevant questions based on your resume and job interests
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                Evaluating your answers and providing constructive feedback
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                Offering tips to improve your verbal and non-verbal communication
+                                            </li>
+                                            <li class="list-group-item">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                Giving you an overall performance score with specific suggestions
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p class="mb-4 text-muted small">
+                                    The interview consists of 10 questions. For each question, you'll type your answer and receive immediate feedback.
+                                </p>
+                                <form method="post" action="{% url 'mock_interview' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="start_interview">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-play-circle me-2"></i>Start Mock Interview
+                                    </button>
+                                </form>
+                            </div>
+                        {% elif interview_started and not interview_completed %}
+                            <!-- Interview In Progress -->
+                            <div class="mb-4">
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-primary" style="width: {{ current_question|multiply:10 }}%"></div>
+                                </div>
+                                <p class="text-muted text-center small">
+                                    Question {{ current_question|add:1 }} of 10
+                                </p>
+                            </div>
+                            
+                            <div class="card mb-4 border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-question-circle me-2"></i> 
+                                        {{ interview_questions|index:current_question }}
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" action="{% url 'mock_interview' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="submit_answer">
+                                        <input type="hidden" name="current_question" value="{{ current_question }}">
+                                        
+                                        <div class="mb-3">
+                                            <label for="answer" class="form-label">Your Answer:</label>
+                                            <textarea class="form-control" id="answer" name="answer" rows="6" placeholder="Type your answer here..." required></textarea>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-paper-plane me-2"></i>Submit Answer
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            {% if evaluations %}
+                                <h5 class="mb-3">Previous Feedback</h5>
+                                <div class="accordion mb-4" id="feedbackAccordion">
+                                    {% for evaluation in evaluations %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                                    <div class="d-flex align-items-center w-100">
+                                                        <div class="me-3">
+                                                            <span class="badge rounded-pill bg-primary">Q{{ forloop.counter }}</span>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            {{ interview_questions|index:forloop.counter0 }}
+                                                        </div>
+                                                        <div class="ms-auto">
+                                                            <span class="badge rounded-pill {% if evaluation.score < 5 %}bg-danger{% elif evaluation.score < 8 %}bg-warning{% else %}bg-success{% endif %}">
+                                                                {{ evaluation.score }}/10
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </h2>
+                                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#feedbackAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6 class="mb-2">Your Answer:</h6>
+                                                            <p class="mb-3">{{ answers|index:forloop.counter0 }}</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6 class="mb-2">Feedback:</h6>
+                                                            <p class="mb-3">{{ evaluation.feedback }}</p>
+                                                            <h6 class="mb-2">Areas for Improvement:</h6>
+                                                            <p class="mb-3">{{ evaluation.improvement }}</p>
+                                                            <div class="alert alert-info">
+                                                                <h6 class="mb-2">Body Language Tip:</h6>
+                                                                <p class="mb-0">{{ evaluation.body_language_tip }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% elif interview_completed %}
+                            <!-- Interview Results -->
+                            <div class="text-center py-4 mb-4">
+                                <h4 class="mb-4">Interview Performance Results</h4>
+                                
+                                <div class="d-flex justify-content-center mb-4">
+                                    <div class="position-relative" style="width: 200px; height: 200px;">
+                                        <canvas id="finalScoreChart"></canvas>
+                                        <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                            <h2 class="display-4 mb-0">{{ final_score }}</h2>
+                                            <p class="text-muted mb-0">Overall Score</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-md-8">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="mb-3">Your Performance Analysis</h5>
+                                                {% if final_score < 5 %}
+                                                    <p>Your interview performance needs significant improvement. Focus on providing more detailed responses and practice answering common interview questions.</p>
+                                                {% elif final_score < 7 %}
+                                                    <p>Your interview performance was average. With more practice and preparation, you can improve your responses and confidence level.</p>
+                                                {% elif final_score < 9 %}
+                                                    <p>Your interview performance was good! You demonstrated strong communication skills but could enhance your answers with more specific examples.</p>
+                                                {% else %}
+                                                    <p>Excellent interview performance! You provided thoughtful, comprehensive answers and demonstrated strong communication skills.</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h5 class="mb-3">Question-by-Question Feedback</h5>
+                                <div class="accordion mb-4" id="resultAccordion">
+                                    {% for evaluation in evaluations %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="resultHeading{{ forloop.counter }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#resultCollapse{{ forloop.counter }}" aria-expanded="false" aria-controls="resultCollapse{{ forloop.counter }}">
+                                                    <div class="d-flex align-items-center w-100">
+                                                        <div class="me-3">
+                                                            <span class="badge rounded-pill bg-primary">Q{{ forloop.counter }}</span>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            {{ interview_questions|index:forloop.counter0 }}
+                                                        </div>
+                                                        <div class="ms-auto">
+                                                            <span class="badge rounded-pill {% if evaluation.score < 5 %}bg-danger{% elif evaluation.score < 8 %}bg-warning{% else %}bg-success{% endif %}">
+                                                                {{ evaluation.score }}/10
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </h2>
+                                            <div id="resultCollapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="resultHeading{{ forloop.counter }}" data-bs-parent="#resultAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6 class="mb-2">Your Answer:</h6>
+                                                            <p class="mb-3">{{ answers|index:forloop.counter0 }}</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6 class="mb-2">Feedback:</h6>
+                                                            <p class="mb-3">{{ evaluation.feedback }}</p>
+                                                            <h6 class="mb-2">Areas for Improvement:</h6>
+                                                            <p class="mb-0">{{ evaluation.improvement }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <h5 class="mb-3">Interview Success Tips</h5>
+                                <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title"><i class="fas fa-search me-2 text-primary"></i>Research</h6>
+                                                <p class="card-text">Research the company thoroughly before your interview. Understand their values, products, and recent achievements.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title"><i class="fas fa-book me-2 text-primary"></i>Prepare</h6>
+                                                <p class="card-text">Prepare examples from your experience that demonstrate your skills and achievements. Use the STAR method (Situation, Task, Action, Result).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title"><i class="fas fa-comments me-2 text-primary"></i>Practice</h6>
+                                                <p class="card-text">Practice your responses out loud. Record yourself and listen to identify areas for improvement in clarity and confidence.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form method="post" action="{% url 'mock_interview' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="restart_interview">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-redo me-2"></i>Try Another Interview
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if interview_completed %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('finalScoreChart').getContext('2d');
+        const finalScore = {{ final_score }};
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [finalScore, 10 - finalScore],
+                    backgroundColor: [
+                        finalScore < 5 ? '#dc3545' : finalScore < 7 ? '#fd7e14' : finalScore < 9 ? '#20c997' : '#0d6efd',
+                        '#e9ecef'
+                    ],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %} 

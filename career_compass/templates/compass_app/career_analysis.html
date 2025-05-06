@@ -1,0 +1,200 @@
+{% extends 'compass_app/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}Career Analysis - Career Compass{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <img src="{% static 'img/logo.png' %}" alt="Career Compass Logo" style="height:70px; width:auto;">
+</div>
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Your Profile Analysis</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h5 class="mb-3">Strengths</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for strength in strengths|split:", " %}
+                                    <li class="list-group-item px-0">
+                                        <i class="fas fa-check-circle text-success me-2"></i> {{ strength }}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item px-0 text-muted">No strengths analyzed yet</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="mb-3">Areas to Improve</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for area in areas_to_improve|split:", " %}
+                                    <li class="list-group-item px-0">
+                                        <i class="fas fa-arrow-circle-up text-warning me-2"></i> {{ area }}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item px-0 text-muted">No improvement areas analyzed yet</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <!-- ATS Score Section -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">ATS Compatibility Score</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="position-relative d-inline-block">
+                                        <svg width="80" height="80" viewBox="0 0 120 120">
+                                            <circle cx="60" cy="60" r="54" fill="none" stroke="#e6e6e6" stroke-width="12"/>
+                                            <circle cx="60" cy="60" r="54" fill="none" stroke-width="12"
+                                                stroke="#3a86ff" 
+                                                stroke-dasharray="339.3"
+                                                stroke-dashoffset="{{ 339.3|add:'-339.3'|add:339.3|add:ats_score|add:'-'|add:'100'|add:'*'|add:'339.3'|add:'/'|add:'100' }}"
+                                                transform="rotate(-90 60 60)"/>
+                                        </svg>
+                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                            <h4 class="mb-0">{{ ats_score }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        {% if ats_score >= 90 %}
+                                            <span class="badge bg-success">Excellent</span>
+                                            <p class="small text-muted mt-1 mb-0">Your resume is highly optimized for ATS systems.</p>
+                                        {% elif ats_score >= 75 %}
+                                            <span class="badge bg-primary">Good</span>
+                                            <p class="small text-muted mt-1 mb-0">Your resume passes most ATS filters but could be improved.</p>
+                                        {% elif ats_score >= 60 %}
+                                            <span class="badge bg-warning">Fair</span>
+                                            <p class="small text-muted mt-1 mb-0">Your resume needs some improvements to better pass ATS filters.</p>
+                                        {% else %}
+                                            <span class="badge bg-danger">Needs Improvement</span>
+                                            <p class="small text-muted mt-1 mb-0">Your resume likely won't pass many ATS filters in its current form.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{% url 'skill_analysis' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-check-circle me-2"></i> View Skill Analysis
+                            </a>
+                            <a href="{% url 'print_report' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-print me-2"></i> Print Report
+                            </a>
+                            <form action="{% url 'remove_resume' %}" method="post" class="d-grid mt-2">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove your resume? This action cannot be undone.');">
+                                    <i class="fas fa-trash-alt me-2"></i> Remove Your Resume
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Recommended Career Paths</h4>
+                        <a href="{% url 'job_recommendations' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-briefcase me-1"></i> View Job Opportunities
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if career_recommendations %}
+                            <div class="row g-4">
+                                {% for recommendation in career_recommendations %}
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ recommendation.title }}</h5>
+                                                
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ recommendation.match_percentage }}%"></div>
+                                                    </div>
+                                                    <span class="badge bg-success">{{ recommendation.match_percentage }}% Match</span>
+                                                </div>
+                                                
+                                                <p class="card-text">{{ recommendation.description }}</p>
+                                                
+                                                <div class="mt-3 row g-2">
+                                                    <div class="col-6">
+                                                        <div class="p-2 bg-light rounded-3">
+                                                            <div class="small text-muted">Avg. Salary</div>
+                                                            <div class="fw-bold">{{ recommendation.avg_salary }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="p-2 bg-light rounded-3">
+                                                            <div class="small text-muted">Growth</div>
+                                                            <div class="fw-bold">{{ recommendation.growth_potential }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1380/1380641.png" alt="No data" style="width: 100px; opacity: 0.5;" class="mb-3">
+                                <h5>No career recommendations yet</h5>
+                                <p class="text-muted">Upload your resume to get personalized career path recommendations</p>
+                                <a href="{% url 'resume_upload' %}" class="btn btn-primary mt-3">
+                                    <i class="fas fa-upload me-2"></i> Upload Resume
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Custom template filter to split comma-separated strings
+    document.addEventListener('DOMContentLoaded', function() {
+        const strengths = document.querySelector('.card-body h5.mb-3 + ul.list-group');
+        const areasToImprove = document.querySelectorAll('.card-body h5.mb-3 + ul.list-group')[1];
+        
+        if (strengths) {
+            const strengthsText = strengths.textContent.trim();
+            if (strengthsText && !strengthsText.includes('No strengths analyzed yet')) {
+                strengths.innerHTML = '';
+                strengthsText.split(',').forEach(strength => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item px-0';
+                    li.innerHTML = `<i class="fas fa-check-circle text-success me-2"></i> ${strength.trim()}`;
+                    strengths.appendChild(li);
+                });
+            }
+        }
+        
+        if (areasToImprove) {
+            const areasText = areasToImprove.textContent.trim();
+            if (areasText && !areasText.includes('No improvement areas analyzed yet')) {
+                areasToImprove.innerHTML = '';
+                areasText.split(',').forEach(area => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item px-0';
+                    li.innerHTML = `<i class="fas fa-arrow-circle-up text-warning me-2"></i> ${area.trim()}`;
+                    areasToImprove.appendChild(li);
+                });
+            }
+        }
+    });
+</script>
+{% endblock %} 
