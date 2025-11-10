@@ -1,0 +1,267 @@
+{% extends 'compass_app/base.html' %}
+
+{% block title %}Analytics - CareerLytics{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Analytics</li>
+                    </ol>
+                </nav>
+                <h2 class="mb-0">Platform Analytics</h2>
+                <p class="text-muted">Insights and statistics about the CareerLytics platform</p>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Career Path Distribution</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="careerPathChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Education Background</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="educationChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">User Activity Timeline</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="activityChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Popular Career Paths</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Career Path</th>
+                                        <th>Users</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for path_count in career_path_counts %}
+                                        <tr>
+                                            <td>{{ path_count.path }}</td>
+                                            <td>{{ path_count.count }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                                             style="width: {{ path_count.percentage|default:50 }}%"></div>
+                                                    </div>
+                                                    <span class="small">{{ path_count.percentage|default:50 }}%</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center">No data available</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Most Recommended Skills</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="skillsChart" height="260"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Career Path Chart
+        const careerPathCtx = document.getElementById('careerPathChart').getContext('2d');
+        new Chart(careerPathCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for path_count in career_path_counts %}'{{ path_count.path }}',{% endfor %}],
+                datasets: [{
+                    label: 'Number of Users',
+                    data: [{% for path_count in career_path_counts %}{{ path_count.count }},{% endfor %}],
+                    backgroundColor: [
+                        'rgba(58, 134, 255, 0.7)',
+                        'rgba(131, 56, 236, 0.7)',
+                        'rgba(255, 0, 110, 0.7)',
+                        'rgba(251, 86, 7, 0.7)',
+                        'rgba(255, 190, 11, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Education Background Chart
+        const educationCtx = document.getElementById('educationChart').getContext('2d');
+        new Chart(educationCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Bachelor\'s', 'Master\'s', 'MBA', 'Diploma', 'PhD', 'Others'],
+                datasets: [{
+                    data: [45, 25, 15, 8, 4, 3],
+                    backgroundColor: [
+                        'rgba(58, 134, 255, 0.7)',
+                        'rgba(131, 56, 236, 0.7)',
+                        'rgba(255, 0, 110, 0.7)',
+                        'rgba(251, 86, 7, 0.7)',
+                        'rgba(255, 190, 11, 0.7)',
+                        'rgba(128, 128, 128, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+        
+        // User Activity Timeline Chart
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'User Registrations',
+                        data: [12, 19, 15, 28, 25, 30, 35, 40, 45, 50, 55, 60],
+                        borderColor: 'rgba(58, 134, 255, 1)',
+                        backgroundColor: 'rgba(58, 134, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Resume Uploads',
+                        data: [8, 15, 12, 20, 18, 25, 30, 32, 38, 42, 48, 52],
+                        borderColor: 'rgba(131, 56, 236, 1)',
+                        backgroundColor: 'rgba(131, 56, 236, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Career Analyses',
+                        data: [5, 12, 10, 18, 15, 22, 27, 30, 35, 40, 45, 50],
+                        borderColor: 'rgba(255, 0, 110, 1)',
+                        backgroundColor: 'rgba(255, 0, 110, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Most Recommended Skills Chart
+        const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+        new Chart(skillsCtx, {
+            type: 'polarArea',
+            data: {
+                labels: ['Python', 'Java', 'JavaScript', 'React', 'Django', 'Data Analysis', 'Communication', 'Teamwork'],
+                datasets: [{
+                    data: [80, 70, 65, 60, 55, 75, 90, 85],
+                    backgroundColor: [
+                        'rgba(58, 134, 255, 0.7)',
+                        'rgba(131, 56, 236, 0.7)',
+                        'rgba(255, 0, 110, 0.7)',
+                        'rgba(251, 86, 7, 0.7)',
+                        'rgba(255, 190, 11, 0.7)',
+                        'rgba(76, 201, 240, 0.7)',
+                        'rgba(67, 97, 238, 0.7)',
+                        'rgba(247, 37, 133, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

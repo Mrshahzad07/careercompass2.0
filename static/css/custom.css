@@ -1,0 +1,160 @@
+/* Custom CSS for CareerLytics */
+
+/* Custom colors for print report */
+@media print {
+    body {
+        font-size: 12pt;
+        color: #000;
+        background: #fff;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+        page-break-inside: avoid;
+    }
+    
+    .page-break {
+        page-break-after: always;
+    }
+    
+    .progress {
+        border: 1px solid #ddd;
+    }
+    
+    a {
+        text-decoration: none;
+        color: #000;
+    }
+}
+
+/* Enhancing the resume upload drag and drop area */
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    position: relative;
+    cursor: pointer;
+}
+
+.drop-zone.border-primary {
+    border-color: #3a86ff;
+    background-color: rgba(58, 134, 255, 0.05);
+    box-shadow: 0 0 10px rgba(58, 134, 255, 0.1);
+}
+
+.drop-zone:hover {
+    border-color: #aaa;
+    background-color: #f5f5f5;
+}
+
+.drop-zone .card-body {
+    transition: all 0.3s ease;
+}
+
+.drop-zone i.fa-file-upload {
+    transition: transform 0.3s ease;
+}
+
+.drop-zone:hover i.fa-file-upload {
+    transform: translateY(-5px);
+}
+
+.drop-zone::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.drop-zone.border-primary::after {
+    opacity: 1;
+}
+
+/* Skill bars animation */
+.skill-item .progress-bar {
+    transition: width 1s ease-in-out;
+}
+
+/* Card hover effects */
+.card-hover-effect {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Custom badges */
+.badge-skill {
+    background-color: #e9f5ff;
+    color: #3a86ff;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 50px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Career path cards */
+.career-path-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.career-path-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: #3a86ff;
+}
+
+/* Job recommendation cards */
+.job-card {
+    border-left: 5px solid #ff006e;
+}
+
+/* Dashboard summary widgets */
+.summary-widget {
+    position: relative;
+    padding-left: 4rem;
+}
+
+.summary-widget-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(58, 134, 255, 0.1);
+    color: #3a86ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}

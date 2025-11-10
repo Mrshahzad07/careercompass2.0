@@ -1,0 +1,199 @@
+/* Footer Styles */
+.footer {
+    background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add animated background effect */
+.footer::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    transform: scale(3);
+}
+
+/* Footer brand section */
+.footer-brand {
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.footer-brand:hover {
+    transform: translateY(-5px);
+}
+
+.footer-icon {
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+/* Footer links styling */
+.footer-links {
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.footer-links:hover {
+    transform: translateY(-5px);
+}
+
+.footer-heading {
+    color: #fff;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #fff;
+    transition: width 0.3s ease;
+}
+
+.footer-links:hover .footer-heading::after {
+    width: 100%;
+}
+
+.footer-list li {
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+}
+
+.footer-list li:hover {
+    transform: translateX(5px);
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    display: block;
+}
+
+.footer-link:hover {
+    color: #fff !important;
+}
+
+.footer-link i {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover i {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Footer divider */
+.footer-divider {
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 30px 0;
+}
+
+/* Footer bottom section */
+.footer-bottom {
+    padding-top: 10px;
+}
+
+.copyright-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    max-width: 700px;
+    margin: 0 auto;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.back-to-top {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-to-top:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.back-to-top i {
+    animation: bounce 2s infinite;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-brand, .footer-links {
+        padding: 0.5rem;
+    }
+    
+    .footer-heading {
+        font-size: 1.1rem;
+    }
+}
+
+/* Dark mode adjustments */
+body.dark-mode .footer {
+    background: linear-gradient(135deg, #23272b, #3a86ff);
+}
+
+body.dark-mode .footer::before {
+    background: linear-gradient(135deg, #23272b, #3a86ff);
+}
+
+body.dark-mode .back-to-top {
+    background: rgba(255, 255, 255, 0.05);
+} 

@@ -1,0 +1,155 @@
+{% extends 'compass_app/base.html' %}
+{% load static %}
+
+{% block title %}Resume Templates - CareerLytics{% endblock %}
+
+{% block content %}
+<section class="py-5" data-aos="fade-up" data-aos-duration="1000">
+    <div class="container">
+        <div class="row justify-content-center mb-5" data-aos="fade-down" data-aos-delay="100">
+            <div class="col-lg-8 text-center">
+                <h1 class="mb-3">ATS-Friendly Resume Templates</h1>
+                <p class="lead text-muted">Choose from our professionally designed templates optimized for Applicant Tracking Systems</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Template 1: Professional -->
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                <div class="card h-100 shadow-sm template-preview" data-template-id="professional">
+                    <img src="{% static 'img/professional_resume.jpg' %}" alt="Professional Resume Template" class="card-img-top">
+                    <div class="card-body">
+                        <h4 class="card-title">Professional</h4>
+                        <p class="card-text">Clean and modern design with a professional layout suitable for all industries.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> High ATS compatibility</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Traditional format</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Optimized headers</li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="https://www.jobscan.co/resume-templates/google-docs-templates" 
+                               target="_blank" 
+                               class="btn btn-primary" data-aos="fade-right" data-aos-delay="300">
+                                <i class="fas fa-eye me-2"></i>Preview Template
+                            </a>
+                            <a href="{% url 'resume_generator' %}?template=professional" class="btn btn-outline-primary" data-aos="fade-left" data-aos-delay="350">
+                                <i class="fas fa-edit me-2"></i>Use This Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Template 2: Modern -->
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                <div class="card h-100 shadow-sm template-preview" data-template-id="modern">
+                    <img src="{% static 'img/modern_resume.jpg' %}" alt="Modern Resume Template" class="card-img-top">
+                    <div class="card-body">
+                        <h4 class="card-title">Modern</h4>
+                        <p class="card-text">Contemporary design with a sleek layout ideal for tech and creative fields.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> High ATS compatibility</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Skill rating visualization</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Clean sections</li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="https://www.jobscan.co/resume-templates/google-docs-templates" 
+                               target="_blank" 
+                               class="btn btn-primary" data-aos="fade-right" data-aos-delay="400">
+                                <i class="fas fa-eye me-2"></i>Preview Template
+                            </a>
+                            <a href="{% url 'resume_generator' %}?template=modern" class="btn btn-outline-primary" data-aos="fade-left" data-aos-delay="450">
+                                <i class="fas fa-edit me-2"></i>Use This Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Template 3: Entry Level -->
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400">
+                <div class="card h-100 shadow-sm template-preview" data-template-id="entry-level">
+                    <img src="{% static 'img/entry_level_resume.jpg' %}" alt="Entry Level Resume Template" class="card-img-top">
+                    <div class="card-body">
+                        <h4 class="card-title">Entry Level</h4>
+                        <p class="card-text">Perfect for fresh graduates with limited work experience. Focuses on skills and education.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> High ATS compatibility</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Education emphasis</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Skill highlights</li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="https://www.jobscan.co/resume-templates/google-docs-templates" 
+                               target="_blank" 
+                               class="btn btn-primary" data-aos="fade-right" data-aos-delay="500">
+                                <i class="fas fa-eye me-2"></i>Preview Template
+                            </a>
+                            <a href="{% url 'resume_generator' %}?template=entry-level" class="btn btn-outline-primary" data-aos="fade-left" data-aos-delay="550">
+                                <i class="fas fa-edit me-2"></i>Use This Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5" data-aos="fade-up" data-aos-delay="600">
+            <div class="col-12 text-center">
+                <div class="card bg-light shadow-sm p-4">
+                    <h3>Why Choose Our ATS-Friendly Templates?</h3>
+                    <p class="lead">Our templates are designed to pass through Applicant Tracking Systems with optimized formatting, keywords, and structure.</p>
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3 mb-md-0" data-aos="fade-up" data-aos-delay="700">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-robot fs-3 text-primary me-3"></i>
+                                <div>
+                                    <h5>ATS Optimized</h5>
+                                    <p class="mb-0 text-muted">Uses formatting that ATS systems can easily scan and parse</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0" data-aos="fade-up" data-aos-delay="800">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-file-word fs-3 text-primary me-3"></i>
+                                <div>
+                                    <h5>Multiple Formats</h5>
+                                    <p class="mb-0 text-muted">Download your resume as DOCX or PDF format</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="900">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-edit fs-3 text-primary me-3"></i>
+                                <div>
+                                    <h5>Customizable</h5>
+                                    <p class="mb-0 text-muted">Easily edit sections to highlight your strengths</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effect to template cards
+        const templateCards = document.querySelectorAll('.template-preview');
+        templateCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.03)';
+                this.style.boxShadow = '0 12px 24px rgba(58,134,255,0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.05)';
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

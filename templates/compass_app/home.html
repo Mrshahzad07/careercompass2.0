@@ -1,0 +1,288 @@
+{% extends 'compass_app/base.html' %}
+
+{% block title %}CareerLytics - Intelligent Career Guidance for Freshers{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Navigate Your Career Journey with Confidence</h1>
+                <p class="lead mb-4">CareerLytics helps fresh graduates identify suitable career paths based on their skills, qualifications, and interests using advanced AI technology.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                        <a href="{% url 'resume_templates' %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-file-alt me-2"></i> Generate Resume
+                        </a>
+                    {% else %}
+                        <a href="{% url 'resume_upload' %}" class="btn btn-outline-primary btn-lg">Upload Resume</a>
+                        <a href="{% url 'resume_templates' %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-file-alt me-2"></i> Generate Resume
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Career Guidance" class="img-fluid rounded-3 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resume Generator Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <h2 class="section-title">ATS-Friendly Resume Generator</h2>
+                <p class="lead">Create professional resumes that pass through Applicant Tracking Systems</p>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle p-2 me-3">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <p class="mb-0">Optimized for ATS compatibility with 95%+ pass rate</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle p-2 me-3">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <p class="mb-0">Choose from multiple professional templates</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle p-2 me-3">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <p class="mb-0">Download in DOCX or PDF format</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle p-2 me-3">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <p class="mb-0">Industry-specific keywords to improve visibility</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'resume_templates' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-file-alt me-2"></i> Create Your Resume Now
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1 mb-5 mb-lg-0">
+                <div class="position-relative">
+                    <img src="media\resumes\resume templates.png" alt="Resume Templates" class="img-fluid rounded-3 shadow-lg">
+                    <div class="position-absolute top-0 end-0 bg-success text-white rounded-circle p-3 shadow-lg" style="transform: translate(25%, -25%);">
+                        <span class="h5 mb-0">95%+</span>
+                        <div class="small">ATS Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title mx-auto" style="width: fit-content">How CareerLytics Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center hover-card">
+                    <div class="mb-4 text-center feature-icon">
+                        <i class="fas fa-file-upload fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="h4">Resume Parser</h3>
+                    <p class="text-body">Upload your resume and our AI will extract key information about your education, skills, and experiences.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center hover-card">
+                    <div class="mb-4 text-center feature-icon">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="h4">Career Path Analyzer</h3>
+                    <p class="text-body">Get personalized career recommendations based on your profile and current industry trends.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center hover-card">
+                    <div class="mb-4 text-center feature-icon">
+                        <i class="fas fa-briefcase fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="h4">Job Recommendations</h3>
+                    <p class="text-body">Discover entry-level positions that match your skills and connect with top job portals in India.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="card p-4 hover-card-stats">
+                    <h2 class="display-4 fw-bold text-primary">85%</h2>
+                    <p class="lead">Fresh graduates found their career direction</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="card p-4 hover-card-stats">
+                    <h2 class="display-4 fw-bold text-primary">70+</h2>
+                    <p class="lead">Career paths analyzed for best matches</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 hover-card-stats">
+                    <h2 class="display-4 fw-bold text-primary">1000+</h2>
+                    <p class="lead">Job opportunities recommended daily</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Portals Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title mx-auto" style="width: fit-content">Our Job Portal Partners</h2>
+        <div class="row g-4 justify-content-center align-items-center">
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.naukri.com" target="_blank" class="text-decoration-none portal-link">
+                    <div class="card p-4 h-100 hover-card-portal">
+                        <h3 class="h4 mb-3">Naukri.com</h3>
+                        <p class="text-body mb-0">India's leading job portal with thousands of listings</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.indeed.co.in" target="_blank" class="text-decoration-none portal-link">
+                    <div class="card p-4 h-100 hover-card-portal">
+                        <h3 class="h4 mb-3">Indeed.com</h3>
+                        <p class="text-body mb-0">Comprehensive job search engine for all industries</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.linkedin.com" target="_blank" class="text-decoration-none portal-link">
+                    <div class="card p-4 h-100 hover-card-portal">
+                        <h3 class="h4 mb-3">LinkedIn</h3>
+                        <p class="text-body mb-0">Professional networking and career opportunities</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Online Course Providers Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title mx-auto" style="width: fit-content">Develop Your Skills</h2>
+        <p class="text-center text-body mb-4">Enhance your career prospects with courses from leading online education platforms</p>
+        <div class="row g-4 justify-content-center align-items-center">
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.coursera.org" target="_blank" class="text-decoration-none course-link">
+                    <div class="card p-4 h-100 hover-card-course">
+                        <h3 class="h4 mb-3">Coursera</h3>
+                        <p class="text-body mb-0">Access university-level courses from top institutions worldwide</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.udemy.com" target="_blank" class="text-decoration-none course-link">
+                    <div class="card p-4 h-100 hover-card-course">
+                        <h3 class="h4 mb-3">Udemy</h3>
+                        <p class="text-body mb-0">Learn practical skills with affordable on-demand courses</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.edx.org" target="_blank" class="text-decoration-none course-link">
+                    <div class="card p-4 h-100 hover-card-course">
+                        <h3 class="h4 mb-3">edX</h3>
+                        <p class="text-body mb-0">Take courses from Harvard, MIT and other leading universities</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-3 text-center">
+                <a href="https://www.skillshare.com" target="_blank" class="text-decoration-none course-link">
+                    <div class="card p-4 h-100 hover-card-course">
+                        <h3 class="h4 mb-3">Skillshare</h3>
+                        <p class="text-body mb-0">Creative and professional skills with project-based learning</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Feedback Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title mx-auto" style="width: fit-content">What Our Users Say</h2>
+        <div class="row g-4">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 p-4 testimonial-card">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="static\img\profile.png" alt="User" class="rounded-circle me-3" width="60">
+                        <div>
+                            <h5 class="mb-0">Raj Kumar</h5>
+                            <p class="text-body mb-0">Software Engineer</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="text-body mb-0">"The resume generator helped me create an ATS-friendly resume that landed me multiple interviews. The career recommendations were spot on for my skillset!"</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 p-4 testimonial-card">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="static\img\profile.png" alt="User" class="rounded-circle me-3" width="60">
+                        <div>
+                            <h5 class="mb-0">Ananya Sharma</h5>
+                            <p class="text-body mb-0">Data Analyst</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star-half-alt text-warning"></i>
+                    </div>
+                    <p class="text-body mb-0">"CareerLytics guided me to explore data analysis when I was unsure about my path after graduation. Their skill assessment was incredibly accurate!"</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 p-4 testimonial-card">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="static\img\profile.png" alt="User" class="rounded-circle me-3" width="60">
+                        <div>
+                            <h5 class="mb-0">Vikram Singh</h5>
+                            <p class="text-body mb-0">UX Designer</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="far fa-star text-warning"></i>
+                    </div>
+                    <p class="text-body mb-0">"The personalized skill development recommendations helped me bridge the gap between my education and industry requirements. Highly recommend to all freshers!"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

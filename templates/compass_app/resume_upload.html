@@ -1,0 +1,164 @@
+{% extends 'compass_app/base.html' %}
+
+{% block title %}Upload Resume - CareerLytics{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Upload Your Resume</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <p class="text-muted">Upload your resume to get personalized career recommendations, skills assessment, and job opportunities.</p>
+                                    <p class="text-muted mb-0">Supported formats: PDF, DOCX, DOC</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5>What happens next?</h5>
+                                    <ul class="text-muted">
+                                        <li>Our AI analyzes your education and skills</li>
+                                        <li>We identify your strengths and areas for growth</li>
+                                        <li>We recommend suitable career paths</li>
+                                        <li>We match you with entry-level job opportunities</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h5>Resume Tips</h5>
+                                        <ul class="text-muted small">
+                                            <li>Include all academic qualifications</li>
+                                            <li>List internships and projects</li>
+                                            <li>Mention technical and soft skills</li>
+                                            <li>Include certifications and achievements</li>
+                                            <li>Make sure your contact details are updated</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="post" enctype="multipart/form-data" action="{% url 'resume_upload' %}" id="resumeUploadForm">
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <div class="card bg-light drop-zone">
+                                    <div class="card-body p-4 text-center">
+                                        <i class="fas fa-file-upload fa-3x text-primary mb-3"></i>
+                                        <h5>Drag and drop your resume here</h5>
+                                        <p class="text-muted small mb-3">or</p>
+                                        
+                                        <div class="input-group">
+                                            <input type="file" class="form-control" id="resume" name="resume" required accept=".pdf,.doc,.docx">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-upload me-2"></i> Upload
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="fas fa-info-circle fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5 class="alert-heading">Privacy Notice</h5>
+                                    <p class="mb-0">Your resume is processed securely to provide career recommendations. We respect your privacy and do not share your personal information with third parties.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    // Drag and drop functionality for resume upload
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.querySelector('.drop-zone');
+        const fileInput = document.getElementById('resume');
+        const form = document.getElementById('resumeUploadForm');
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Highlight drop zone when dragging over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        // Remove highlight when dragging leaves or on drop
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropZone.classList.add('border', 'border-primary');
+        }
+        
+        function unhighlight() {
+            dropZone.classList.remove('border', 'border-primary');
+        }
+        
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            // Check if files were dropped
+            if (files.length > 0) {
+                // We can't directly set fileInput.files as it's read-only
+                // Instead, we create a new DataTransfer object
+                const dataTransfer = new DataTransfer();
+                
+                // Add the first file to the DataTransfer object
+                dataTransfer.items.add(files[0]);
+                
+                // Now we can assign to the file input's files property
+                fileInput.files = dataTransfer.files;
+                
+                // Add visual feedback
+                const fileName = files[0].name;
+                dropZone.querySelector('h5').textContent = `File selected: ${fileName}`;
+                
+                // Optional: auto-submit the form
+                // form.submit();
+            }
+        }
+        
+        // Visual feedback when selecting file via the file input
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const fileName = this.files[0].name;
+                dropZone.querySelector('h5').textContent = `File selected: ${fileName}`;
+            } else {
+                dropZone.querySelector('h5').textContent = 'Drag and drop your resume here';
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

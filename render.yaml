@@ -1,0 +1,24 @@
+databases:
+  - name: career_compass_db
+    databaseName: career_compass
+    user: career_compass
+
+services:
+  - type: web
+    name: career-compass
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn career_compass.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: career_compass_db
+          property: connectionString

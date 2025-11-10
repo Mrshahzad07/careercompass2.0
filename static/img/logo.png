@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Briefcase base -->
+  <path d="M150 245 L150 450 L450 450 L450 245 Z" fill="#0a2e4a"/>
+  <!-- Briefcase handle -->
+  <path d="M250 245 L250 200 L350 200 L350 245 Z" fill="#0a2e4a"/>
+  
+  <!-- Chart bars -->
+  <rect x="300" y="350" width="50" height="100" fill="#2b8ac0"/>
+  <rect x="350" y="300" width="50" height="150" fill="#2b8ac0"/>
+  <rect x="400" y="250" width="50" height="200" fill="#2b8ac0"/>
+  
+  <!-- Growth arrow -->
+  <path d="M150 450 L300 300 L350 350 L450 250 L450 200 L400 200 L400 250 L350 300 L300 250 L150 400 Z" fill="#ffffff" stroke="#0a2e4a" stroke-width="5"/>
+  <path d="M450 200 L400 250 L450 250 Z" fill="#0a2e4a"/>
+  
+  <!-- CareerLytics text -->
+  <text x="100" y="500" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#0a2e4a">CareerLytics</text>
+</svg>
