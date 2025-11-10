@@ -1,0 +1,158 @@
+{% extends 'compass_app/base.html' %}
+
+{% block title %}Feedback - Career Compass{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-comment-dots me-2 text-primary"></i>Share Your Feedback</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if success_message %}
+                        <div class="alert alert-success" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>{{ success_message }}
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-4">We value your opinion! Please rate your experience with Career Compass and provide any feedback or suggestions you have.</p>
+                        
+                        <form method="post" action="{% url 'feedback' %}">
+                            {% csrf_token %}
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-medium">Your Rating</label>
+                                <div class="star-rating d-flex align-items-center">
+                                    <div class="rating-container d-flex fs-3 mb-3">
+                                        <input type="radio" id="star5" name="rating" value="5" class="d-none">
+                                        <label for="star5" class="star me-2"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star4" name="rating" value="4" class="d-none">
+                                        <label for="star4" class="star me-2"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star3" name="rating" value="3" class="d-none">
+                                        <label for="star3" class="star me-2"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star2" name="rating" value="2" class="d-none">
+                                        <label for="star2" class="star me-2"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star1" name="rating" value="1" class="d-none">
+                                        <label for="star1" class="star me-2"><i class="far fa-star"></i></label>
+                                    </div>
+                                    <span class="rating-text ms-3 text-muted"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="name" class="form-label fw-medium">Your Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required placeholder="Enter your name">
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label fw-medium">Your Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required placeholder="Enter your email">
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="feedback" class="form-label fw-medium">Your Feedback</label>
+                                <textarea class="form-control" id="feedback" name="feedback" rows="5" required placeholder="Please share your thoughts, suggestions, or any issues you've encountered..."></textarea>
+                            </div>
+                            
+                            <div class="form-group mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="contact_permission" name="contact_permission">
+                                <label class="form-check-label" for="contact_permission">I agree to be contacted about my feedback if needed</label>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Feedback
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star');
+        const ratingText = document.querySelector('.rating-text');
+        const ratingTexts = [
+            'Not satisfied', 
+            'Somewhat satisfied', 
+            'Satisfied', 
+            'Very satisfied', 
+            'Extremely satisfied'
+        ];
+        
+        // Set initial state
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                const rating = 5 - index;
+                updateStars(rating);
+                ratingText.textContent = ratingTexts[rating - 1];
+            });
+            
+            star.addEventListener('mouseover', () => {
+                const rating = 5 - index;
+                highlightStars(rating);
+            });
+        });
+        
+        const ratingContainer = document.querySelector('.rating-container');
+        ratingContainer.addEventListener('mouseout', () => {
+            const selectedRating = document.querySelector('input[name="rating"]:checked');
+            if (selectedRating) {
+                updateStars(selectedRating.value);
+            } else {
+                resetStars();
+            }
+        });
+        
+        function updateStars(rating) {
+            stars.forEach((star, i) => {
+                const starIndex = 5 - i;
+                const input = document.getElementById(`star${starIndex}`);
+                input.checked = starIndex <= rating;
+                
+                if (starIndex <= rating) {
+                    star.innerHTML = '<i class="fas fa-star text-warning"></i>';
+                } else {
+                    star.innerHTML = '<i class="far fa-star"></i>';
+                }
+            });
+        }
+        
+        function highlightStars(rating) {
+            stars.forEach((star, i) => {
+                const starIndex = 5 - i;
+                if (starIndex <= rating) {
+                    star.innerHTML = '<i class="fas fa-star text-warning"></i>';
+                } else {
+                    star.innerHTML = '<i class="far fa-star"></i>';
+                }
+            });
+            
+            ratingText.textContent = ratingTexts[rating - 1];
+        }
+        
+        function resetStars() {
+            stars.forEach(star => {
+                star.innerHTML = '<i class="far fa-star"></i>';
+            });
+            ratingText.textContent = '';
+        }
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+{% load custom_filters %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Analysis Report - {{ user_info.username }}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+        
+        .logo {
+            max-height: 50px;
+        }
+        
+        .report-header {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+        }
+        
+        .section-title {
+            border-bottom: 2px solid #3a86ff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #3a86ff;
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+        
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .card {
+                border: 1px solid #ddd;
+                margin-bottom: 1rem;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <!-- Print Button (only visible on screen) -->
+        <div class="text-end mb-4 no-print">
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print me-2"></i> Print Report
+            </button>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary ms-2">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <!-- Report Header -->
+        <div class="report-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0">Career Analysis Report</h1>
+                    <p class="text-muted">Generated on {{ report_date }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="{% static 'img/logo.png' %}" alt="Career Compass" class="logo" style="height:70px; width:auto;">
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Info Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>User Information</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th style="width: 40%">Name:</th>
+                                <td>{{ user_info.full_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>{{ user_info.email }}</td>
+                            </tr>
+                            {% if user_info.profile.phone %}
+                            <tr>
+                                <th>Phone:</th>
+                                <td>{{ user_info.profile.phone }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Education</h5>
+                        <table class="table table-borderless">
+                            {% if user_info.profile.education %}
+                            <tr>
+                                <th style="width: 40%">Qualification:</th>
+                                <td>{{ user_info.profile.education }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if user_info.profile.university %}
+                            <tr>
+                                <th>Institution:</th>
+                                <td>{{ user_info.profile.university }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if user_info.profile.graduation_year %}
+                            <tr>
+                                <th>Graduation Year:</th>
+                                <td>{{ user_info.profile.graduation_year }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ATS Score Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center">
+                        <h4 class="mb-0">ATS Compatibility</h4>
+                        <div class="position-relative d-inline-block mt-2">
+                            <svg width="100" height="100" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="#e6e6e6" stroke-width="12"/>
+                                <circle cx="60" cy="60" r="54" fill="none" stroke-width="12"
+                                    stroke="#3a86ff" 
+                                    stroke-dasharray="339.3"
+                                    stroke-dashoffset="{{ 339.3|add:'-339.3'|add:339.3|add:ats_score|add:'-'|add:'100'|add:'*'|add:'339.3'|add:'/'|add:'100' }}"
+                                    transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <h3 class="mb-0">{{ ats_score }}</h3>
+                                <div class="small text-muted">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <h5>Resume ATS Analysis</h5>
+                        <p>Applicant Tracking Systems (ATS) are used by employers to scan resumes for keywords and qualifications before they reach human reviewers.</p>
+                        
+                        <div class="mt-3">
+                            {% if ats_score >= 90 %}
+                                <h6><span class="badge bg-success">Excellent ({{ ats_score }}/100)</span></h6>
+                                <p>Your resume is extremely well-optimized for ATS systems. It should easily pass automated screening at most companies.</p>
+                            {% elif ats_score >= 75 %}
+                                <h6><span class="badge bg-primary">Good ({{ ats_score }}/100)</span></h6>
+                                <p>Your resume is well-formatted for ATS systems. It should pass most automated screening processes but could still be improved.</p>
+                            {% elif ats_score >= 60 %}
+                                <h6><span class="badge bg-warning">Fair ({{ ats_score }}/100)</span></h6>
+                                <p>Your resume may pass some ATS screens but needs improvements to become more competitive. Consider using more industry-specific keywords.</p>
+                            {% else %}
+                                <h6><span class="badge bg-danger">Needs Improvement ({{ ats_score }}/100)</span></h6>
+                                <p>Your resume likely won't pass many ATS filters in its current form. Consider reformatting and adding more relevant keywords.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Analysis Section -->
+        <h2 class="section-title">Profile Analysis</h2>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Strengths</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if strengths %}
+                            <ul class="list-group list-group-flush">
+                                {% for strength in strengths|split:", " %}
+                                    <li class="list-group-item px-0">
+                                        <i class="fas fa-check-circle text-success me-2"></i> {{ strength }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No strengths have been identified yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Areas to Improve</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if areas_to_improve %}
+                            <ul class="list-group list-group-flush">
+                                {% for area in areas_to_improve|split:", " %}
+                                    <li class="list-group-item px-0">
+                                        <i class="fas fa-arrow-circle-up text-warning me-2"></i> {{ area }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No improvement areas have been identified yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Skills Assessment Section -->
+        <div class="page-break"></div>
+        <h2 class="section-title">Skills Assessment</h2>
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Current Skills</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if skill_matches %}
+                            {% for skill in skill_matches %}
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span>{{ skill.name }}</span>
+                                        <span>{{ skill.proficiency }}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                             style="width: {{ skill.proficiency }}%"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No skill assessment available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Recommended Skills</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recommended_skills %}
+                            <p class="text-muted mb-3">Skills to develop based on your career path:</p>
+                            {% for skill in recommended_skills %}
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span>{{ skill.name }}</span>
+                                        <span>{{ skill.importance }}% Important</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                             style="width: {{ skill.importance }}%"></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No skill recommendations available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Career Recommendations Section -->
+        <div class="page-break"></div>
+        <h2 class="section-title">Career Path Recommendations</h2>
+        <div class="row">
+            {% if career_recommendations %}
+                {% for recommendation in career_recommendations %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">{{ recommendation.title }}</h5>
+                                <span class="badge bg-success">{{ recommendation.match_percentage }}% Match</span>
+                            </div>
+                            <div class="card-body">
+                                <p>{{ recommendation.description }}</p>
+                                
+                                <div class="row g-2 mt-3">
+                                    <div class="col-6">
+                                        <div class="p-2 bg-light rounded">
+                                            <div class="small text-muted">Average Salary</div>
+                                            <div class="fw-bold">{{ recommendation.avg_salary }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 bg-light rounded">
+                                            <div class="small text-muted">Growth Potential</div>
+                                            <div class="fw-bold">{{ recommendation.growth_potential }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p class="text-muted">No career recommendations available yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Job Recommendations Section -->
+        <div class="page-break"></div>
+        <h2 class="section-title">Job Opportunities</h2>
+        <div class="row">
+            {% if job_recommendations %}
+                {% for job in job_recommendations %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">{{ job.title }}</h5>
+                                <div class="text-muted">{{ job.company }}</div>
+                            </div>
+                            <div class="card-body">
+                                <p>{{ job.description }}</p>
+                                
+                                {% if job.portal %}
+                                    <div class="d-flex align-items-center mt-3">
+                                        <span class="badge bg-light text-dark me-2">{{ job.portal }}</span>
+                                        <span class="text-muted small">{{ job.url }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p class="text-muted">No job recommendations available yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Footer -->
+        <footer class="mt-5 pt-4 border-top text-center">
+            <p><strong>Career Compass</strong> - Intelligent Resume Screening & Career Direction System</p>
+            <p class="text-muted small">This report is generated based on AI analysis of your profile. It is provided for guidance purposes only.</p>
+        </footer>
+    </div>
+    
+    <!-- JavaScript to handle the comma-separated strings for strengths and areas to improve -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // This script will run only when viewing in browser, not when printing
+            // It handles the splitting of comma-separated strings in strengths and areas to improve
+            // Template tags will handle this server-side, this is just a backup for client-side
+        });
+    </script>
+</body>
+</html> 

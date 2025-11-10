@@ -1,0 +1,117 @@
+{% extends 'compass_app/base.html' %}
+{% load static %}
+
+{% block title %}Interview Practice - Career Compass{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ensure the title is visible in both day and night modes */
+    .interview-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    }
+    
+    .interview-header h2, 
+    .interview-header p {
+        color: white !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    body.dark-mode .interview-header {
+        background: linear-gradient(135deg, #23272b, #3a86ff) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow border-0 rounded-3 mb-4">
+                <div class="card-header interview-header p-4">
+                    <h2 class="m-0 fw-bold">Interview Practice</h2>
+                    <p class="m-0">Practice interview questions from IndiaBIX to prepare for your interviews</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-info-circle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="alert-heading">About IndiaBIX</h5>
+                                <p class="mb-0">IndiaBIX provides you lots of fully solved questions and answers with detailed explanations. Practice these interview questions to improve your skills and prepare for your dream job.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if suggested_categories %}
+                    <div class="mb-5">
+                        <h4 class="border-bottom pb-2 mb-3">Recommended Practice Areas</h4>
+                        <p class="text-muted">Based on your resume and skills, we recommend these practice areas:</p>
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            {% for category in suggested_categories %}
+                            <div class="col">
+                                <div class="card h-100 border-primary hover-lift">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ category.name }}</h5>
+                                        <p class="card-text text-muted">Practice {{ category.name }} questions to strengthen your skills in this area.</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top-0">
+                                        <a href="{{ category.url }}" target="_blank" class="btn btn-primary btn-sm">Start Practice <i class="fas fa-external-link-alt ms-1"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <h4 class="border-bottom pb-2 mb-3">All Practice Categories</h4>
+                    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+                        {% for category in categories %}
+                        <div class="col">
+                            <div class="card h-100 hover-lift">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ category.name }}</h5>
+                                    <p class="card-text text-muted">Practice {{ category.name }} questions to improve your interview skills.</p>
+                                </div>
+                                <div class="card-footer bg-transparent border-top-0">
+                                    <a href="{{ category.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Start Practice <i class="fas fa-external-link-alt ms-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Interview Practice Tips Section -->
+                    <div class="mt-4">
+                        <h4 class="border-bottom pb-2 mb-3">Interview Practice Tips</h4>
+                        <div class="row bg-light rounded p-3">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-check-circle text-success me-2"></i> Do's</h5>
+                                <ul class="list-group list-group-flush mb-4">
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Practice consistently, not just the day before</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Understand concepts rather than memorizing answers</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Time yourself to improve speed and efficiency</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Review explanations for questions you get wrong</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Focus on your weak areas but don't neglect strengths</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-times-circle text-danger me-2"></i> Don'ts</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Don't cram without understanding</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Don't just focus on questions, understand the underlying concepts</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Don't get discouraged by difficult questions</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Don't ignore your progress metrics</li>
+                                    <li class="list-group-item bg-transparent px-0"><i class="fas fa-angle-right text-primary me-2"></i> Don't practice without simulating real interview conditions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
